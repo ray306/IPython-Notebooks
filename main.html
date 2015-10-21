@@ -1,0 +1,94 @@
+<html>
+    <head>
+        <title>轻国下书-LKBook Geter</title>
+        <style>
+            h2{margin: 2px; 
+                padding: 5px; 
+                text-align: center;
+                color: #333;
+                font-family: "Microsoft YaHei" !important;
+                -webkit-border-radius: 5px; 
+                border: 1px solid #a2c159; 
+                background-color: #a2c159;}
+            body{ 
+                background-color:#ecebeb;
+                font-family: "Microsoft YaHei" !important;
+                border:0;
+                font-size: 100%;
+                margin:5px;
+                outline:0;
+                padding:0;
+            }
+            label{display:block;padding:2px;margin:5px 0 8px;border:1px dashed #CCA;border-width:1px 0;background-color:#FFC;color:#454545;}
+            #send,#stop{padding:2px;margin:0 2px 0 0;background-color:#C2D5E3;font-family: "Microsoft YaHei" !important;}
+            input[type="text"]{width:210px;margin-right:10px;}
+        </style>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js" type="text/javascript"></script> 
+        <script language="javascript"> 
+        　　window.resizeTo(410, 204);
+            
+        </script> 
+    </head>
+    <body>
+        <h2>轻国下书</h2>
+        <form action="/" method="POST">
+            请输入轻国论坛网址:
+            <br/> 
+            <input type="text" name="url"><span id="send">开始下书</span><span id="stop">终止运行</span>
+            <br/>
+            <input type="checkbox" name="login" />
+            需要登录
+            <input type="checkbox" name="chardet" />
+            转换为简体
+            <br/>
+            <div class="notices">
+                <label class="notice">Ready...</label>
+            </div>
+        </form>
+
+        <script language="javascript"> 
+            this.timer = setInterval(function () {
+                jQuery.ajax({
+                    url:'/',
+                    data: 'action=getState',
+                    type: 'post',
+                    success: function (data) {
+                        data=JSON.parse(data);
+                        if(data=="") 
+                            return;
+                        $(".notices").empty();
+                        for (i in data){
+                            var labelItem=document.createElement("label");
+                            labelItem.innerHTML=data[i];
+                            $(".notices").append(labelItem);
+                        }
+                        window.resizeTo(410, 200+25*data.length);
+                        // jQuery(".notice").html(data);
+                    }
+                });
+            }, 500);
+
+            jQuery("#send").click(function(){
+                jQuery.ajax({
+                    url:'/',
+                    data: 'action=sendUrl&url='+jQuery(":text").val(),
+                    type: 'post',
+                    // success: function (data) {
+                    //     jQuery(".notice").html(data);
+                    // }
+                });
+            });
+            jQuery("#stop").click(function(){
+                jQuery.ajax({
+                    url:'/',
+                    data: 'action=stop',
+                    type: 'post',
+                    success: function (data) {}
+                });
+                window.open('','_parent',''); 
+                window.close(); 
+            });
+
+        </script> 
+    </body>
+</html>
